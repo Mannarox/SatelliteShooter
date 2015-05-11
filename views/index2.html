@@ -1,0 +1,35 @@
+<head>
+  <meta charset="UTF-8">
+  <title> Cursor </title>
+  <link href="/style.css" rel="stylesheet">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="scripts.js"></script>
+</head>
+<body>
+  <div class ="bigForm">
+    <form>
+      <input class="nameCursor" type="text" placeholder="Введите имя">
+    </form>
+    <div class="offButton">
+      <button class ="button">Принять</button>
+    </div>
+  </div>
+  <div class="gamePole">
+    <div class="interface">
+      <div class="preview">
+        <div class="faceSolder"></div>
+        <div class="textSolder">Военное положение крайне тяжелое! нам нужна ваша помощ! Под вашем управлением находятся военный спутник с рельсотронной пушкой, спомощью неё вы можете делать орбитальный удар и защитить нас</div>
+        <button class="start">Так точно!</button>
+      </div>
+      <div class="score"></div>
+    </div>
+    <div class="bunkerBlock">
+      <div class="bunker"></div>
+      <progress value="70" max="100"></progress>
+    </div>
+    <div class="nameBox"></div>
+    <div class="monstr a1"></div>
+    <div class="monstr a2"></div>
+  </div>
+</body>

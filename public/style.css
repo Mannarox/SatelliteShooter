@@ -1,5 +1,10 @@
 /*@charset "utf-8";*/
 
+body {
+  font-family: Lucida Console;
+  /*overflow:hidden;*/
+  background-color:black;
+}
 progress {
   display: block;
   width:100%;
@@ -8,6 +13,7 @@ progress {
   -webkit-appearance: none;
    appearance: none;
    writing-mode: lr-tb;
+   margin-left: -7px;
 }
 progress::-webkit-progress-bar {
     background: red;
@@ -22,45 +28,107 @@ progress::-webkit-progress-value {
 progress::-moz-progress-value {
     background: green;
 }
-
-.bigForm{
+h1,h2,h3 {
   text-align:center;
-  padding:10px;
-  display:inline-block;
-  margin:50px;
-  width:300px;
-  height:100px;
-  background-color:yellow;
+}
+button {
+    outline-style: none;
 }
 
+
+.bigForm{
+  padding:10px;
+  width:85%;
+  background-color:black;
+  margin-left:auto;
+  margin-right:auto;
+}
+  .title {
+    color:#33ccff;
+  }
+.monitorBlock {
+  /*width:760px;*/
+  height:475px;
+  padding:185px 312px 120px 185px;
+  /*padding:20% 30% 25% 25%;*/
+  color:#33ccff;
+  background-image:url(./image/MonitorJPG.jpg);
+  background-size:cover;
+}  
+  .commonColumnBlock {
+    /*width:500px;*/
+    /*width:80%;*/
+  }
+    .leftColumn{
+      float:left;
+      width:44%;
+      /*height:400px;*/
+      margin-top:10px;
+      padding:0 4%;
+      overflow:auto;
+      border-right: 2px solid #33ccff;
+      /*background-color:#000033;*/
+    }
+    .rightColumn{
+      margin-top:10px;
+      float:right;  
+      width:44%;
+      /*padding:0 2%;*/
+      /*background-color:#000033;*/
+    }
+         .nameCursor {
+           margin-top:30px;
+           margin-left:20px;
+           height:50px;
+           border: 2px double #33ccff;
+           background-color:transparent;
+         }
+            input[type="text"]::-webkit-input-placeholder { 
+                color: #33ccff; 
+            }
+            
+         .buttonAccept {
+           width:150px;
+           height:50px;
+           border: 2px double #33ccff;
+           background-color:transparent;
+           margin-left:50px;
+           margin-top: 20px;
+         }
 
 .nameBox {
   display:none;
   position:absolute;
-  width:100px;
-  height:20px;
+  pointer-events:none;
+  /*width:100px;*/
+  padding:5px;
   background-color:black;
   color:white;
   top:120px;
   left:101px;
 }
-#nameBox {
-  display:none;
-  position:absolute;
-  width:100px;
-  height:20px;
-  background-color:black;
-  color:white;
-  top:120px;
-  left:101px;
-}
+/*#nameBox {*/
+/*  display:none;*/
+/*  position:absolute;*/
+/*  width:100px;*/
+/*  height:20px;*/
+/*  background-color:black;*/
+/*  color:white;*/
+/*  top:120px;*/
+/*  left:101px;*/
+/*}*/
 /*/////////////////////*/
 
 
 .gamePole {
+  position:relative;
   width:100%;
   height:100vh;
   background-color:#ffbf40;
+  background-image:url("./image/groudGameWeb.jpg");
+  /*cursor : url("./image/myCurcor.cur"), default;*/
+  overflow:hidden;
+  display:none;
 }
 .interface {
   position:relative;
@@ -68,52 +136,168 @@ progress::-moz-progress-value {
 }
   .preview{
     position:absolute;
+    z-index:100;
     bottom:0;
-    width:500px;
-    height:200px;
-    background-color:#FFD073;
+    width:560px;
+    height:220px;
+    /*background-color:#333333;*/
+    background-image:url(./image/pattern.jpg);
   }
     .faceSolder {
       width:200px;
       height:inherit;
       background-color:#A66F00;
       float:left;
-      background-image:url(./image/solder.jpg);
+      background-image:url(./image/soldier3.png);
       background-size:cover;
     }
     .textSolder{
-      width:280px;
+      width:300px;
       /*height:inherit;*/
-      background-color:#876ED7;
-      /*padding:10px;*/
-      margin:10px;
+      background-color:#333333;
+      background-image:url(./image/interfacePanelMini2.png);
+      background-repeat:no-repeat;
+      background-size:cover;
+      padding:30px 25px 25px 30px;
+      color:#33ccff;
+      /*margin:10px;*/
       float:left;
+    }
+    .backUp{
+        margin-left:45px;
+        margin-top:10px;
+        width:32px;
+        height:32px;
+        background-image:url(./image/buttonLeft.png);
+        background-size:cover;
+        border:none;
+        background-color:transparent;
+    }
+         .backUp:active {
+             background-image:url(./image/buttonLeftPressured.png);
+         }
+    .forward{
+        margin-left:5px;
+        width:32px;
+        height:32px;
+        background-image:url(./image/buttonRight.png);
+        background-size:cover;
+        border:none;
+        background-color:transparent;
+    }
+        .forward:active {
+            background-image:url(./image/buttonRightPressured.png);
+        }
+
+    .start {
+      position:relative;
+      height:32px;
+      margin-left:10%;
+      top:-10px;
+      background-color:#990000;
+      color:#ffcc00;
+      padding:5px;
     }
   .score {
      position:absolute;
+     z-index:100;
      right:0;
+     padding-bottom: 10px;
      /*width:200px;*/
-     background-color:#999999;
+     /*height:200px;*/
+     background-image:url(./image/interfaceBackgroundPanel2.jpg);
+     color:#33ccff;
   }
     .scorePlayer {
       padding:10px;
     }
+    .ContainerResultsPanel {
+        
+    }
+    .defeatPanel {
+        position:absolute;
+        top:20%;
+        left:50%;
+        width:300px;
+        margin-left:-200px;
+        /*height:200px;*/
+        padding:50px;
+        /*background-color:#333333;*/
+        background-image:url(./image/pattern.jpg);
+        z-index:101;
+        color:#33ccff;
+        display:none;
+    }
+        .textPanel {
+            margin-bottom:30px;
+        }
+        .resultsPanel{
+            height:25px;
+        }
+        .defeatName {
+            float:left;
+        }
+        .defeatScore {
+            float:right;
+        }
+        .restartGame {
+            margin-top: 20px;
+            margin-left:25%;
+            /*background-color:black;*/
+            background-color: #990000;
+            color: #ffcc00;
+        }
+    
+    
     .bunkerBlock {
-      width:100px;
-      height:100px;
+      /*width:150px;*/
+      /*height:100px;*/
       position:absolute;
+      z-index:1;
       left:50%;
       top:50vh;
       margin-left:-50px;
       margin-top:-50px;
-      background-color:#333333;
+      /*background-color:#333333;*/
     }
     .bunker {
       background-image:url(./image/Bunker.png);
       background-size:cover;
-      width:80px;
-      height:80px;
+      width:150px;
+      height:126px;
+      z-index: 1;
     }
+    .explosion {
+      position:absolute;
+      z-index:30;
+      /*background-image:url(./image/explosionAnimation2.gif);*/
+      background-size:cover;
+      pointer-events:none;
+      /*width:122px;*/
+      width:61px;
+      height:57px;
+    }
+    .corps {
+      position:absolute;
+      z-index:10;
+      background-size:cover;
+      width:61px;
+      height:57px;
+    }
+    .bossCorps{
+        position:absolute;
+        z-index:10;
+        background-size:cover;
+        width:70px;
+        height:65px;
+    }
+   /*#testBox {*/
+   /*  position:absolute;*/
+   /*  width:100px;*/
+   /*  height:100px;*/
+   /*  background-color:black;*/
+   /*}*/
+ 
   
 /*.button {*/
 /*  display:block;*/
@@ -126,11 +310,11 @@ progress::-moz-progress-value {
     }
 }
 .monstr {
-    top:1vh;
     position:absolute;
+    z-index:20;
   	width:60px;
   	height:60px;
-  	background-image:url(./image/monstrSmall.png);
+  	/*background-image:url(./image/monstrAnimationTopToBottom.gif);*/
   	/*background-repeat:no-repeat;*/
   	background-size:cover;
   	animation-delay: 500ms;
@@ -140,9 +324,116 @@ progress::-moz-progress-value {
     -webkit-animation-iteration-count: infinite;
     -webkit-animation-timing-function: linear;
 }
-.a1 {
-  left:1%;
+.boss {
+    position:absolute;
+    z-index:20;
+  	width:80px;
+  	height:80px;
+  	background-image:url(./image/monstrBoss.png);
+  	/*background-repeat:no-repeat;*/
+  	background-size:cover;
+  	/*transition-property: top;*/
+   /* transition-duration: 10s;*/
+  	-webkit-animation-name: monstrGoToBunker;
+    -webkit-animation-duration: 10s;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-timing-function: linear;
 }
-.a2 {
+.healingBox {
+    position:absolute;
+    width: 35px;
+    height: 30px;
+    background-image:url(./image/healingBoxGif.gif);
+    background-size:cover;
+    z-index:15;
+}
+/*------top--------*/
+.position1 {
+  left:-5%;
+  top:-5%;
+}
+.position2 {
+  left:50%;
+  top:-5%;
+}
+.position3 {
+  left:90%;
+  top:-5%;
+}
+
+/*------right--------*/
+.position4 {
   left:100%;
+  top:10%;
+}
+.position5 {
+  left:100%;
+  top:50%;
+}
+.position6 {
+  left:100%;
+  top:90%;
+}
+
+/*------bottom--------*/
+.position7 {
+  left:90%;
+  top:105%;
+}
+.position8 {
+  left:50%;
+  top:105%;
+}
+.position9 {
+  left:10%;
+  top:105%;
+}
+
+/*------left--------*/
+.position10 {
+  left:-5%;
+  top:90%;
+}
+.position11 {
+  left:-5%;
+  top:50%;
+}
+.position12 {
+  left:-5%;
+  top:10%;
+}
+
+/*@media only screen and (min-width: 1100px) {*/
+/*    .bigForm {*/
+/*          width: 99%;*/
+/*    }*/
+/*    .monitorBlock{*/
+/*        padding: 130px 256px 80px 154px;*/
+/*    }*/
+/*}*/
+@media only screen and (max-width: 1200px) {
+    .bigForm {
+          width: 99%;
+    }
+    .monitorBlock{
+        padding: 175px 320px 154px 195px;
+    }
+}
+@media only screen and (min-width: 1400px) {
+  .bigForm {
+          width: 75%;
+    }
+    .monitorBlock{
+        padding: 155px 285px 120px 203px;
+    }
+    
+}
+@media only screen and (min-width: 1600px) {
+  .bigForm {
+          width: 75%;
+    }
+    .monitorBlock{
+        padding: 225px 391px 170px 247px;
+    }
+    
 }

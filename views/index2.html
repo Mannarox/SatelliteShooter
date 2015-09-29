@@ -1,6 +1,9 @@
+<!DOCTYPE html>
+<html lang="ru">
 <head>
   <meta charset="UTF-8">
   <title> Cursor </title>
+  <link href="/normalize.css" rel="stylesheet">
   <link href="/style.css" rel="stylesheet">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
   <script src="/socket.io/socket.io.js"></script>
@@ -8,28 +11,66 @@
 </head>
 <body>
   <div class ="bigForm">
-    <form>
-      <input class="nameCursor" type="text" placeholder="Введите имя">
-    </form>
-    <div class="offButton">
-      <button class ="button">Принять</button>
+    <h1 class="title">Нашествие</h1>
+    <div class="monitorBlock">
+      <div class="commonColumnBlock">
+        <div class="leftColumn">
+          <h3>Информация</h3>
+            <p>
+              Человечество почти полностью было унитожено в результате ядерной войны, а после мир заполонили жасные мутанты, люди забились в различные бункеры  и стали строить закрытые и защищенные поселения где они пытаются выжить.
+            </p> 
+            <p>
+              Большая их часть потом была уничтожена. Однако еще осталось вполне много жизнеспособных поселений. Один из таких бункеров вам предстоит защитить, пока его жители по подземным проходам не эвакуируютя из него.
+            </p>
+        </div>
+        <div class="rightColumn">
+          <h3>Авторизация</h3>
+          <p>
+            Что бы пройти дальше, вы должны осуществить процедуру индефикации в операционной системе военного спутника, для этого заполните поле ниже
+          </p>
+          <form>
+            <input class="nameCursor" type="text" placeholder="Введите имя" maxlength="20">
+          </form>
+            <button class ="buttonAccept">Принять</button>
+        </div>
+      </div>
     </div>
   </div>
   <div class="gamePole">
     <div class="interface">
       <div class="preview">
         <div class="faceSolder"></div>
-        <div class="textSolder">Военное положение крайне тяжелое! нам нужна ваша помощ! Под вашем управлением находятся военный спутник с рельсотронной пушкой, спомощью неё вы можете делать орбитальный удар и защитить нас</div>
-        <button class="start">Так точно!</button>
+        <div class="SolderPanel">
+          <div class="textSolder">
+             Не буду многословен боец, мутанты обнаружили расположение нашего бункера и их орды мчаться сейчас сюда. Наше военное положение крайне тяжелое! Я отдал приказ начать эвакуацию людей.
+          </div>
+          <button class="backUp"></button>
+          <button class="forward"></button>
+          <button class="start">Так точно!</button>
+        </div>
       </div>
       <div class="score"></div>
+      <div class="defeatPanel">
+        <div class="textPanel">
+          <h3>Защита прорвана</h3>
+          <p>
+            защита бункера была уничтожена,
+            но благодаря вам, удалось спасти много невинных людей
+          </p>
+        </div>
+        <div class="ContainerResultsPanel"></div>
+        <button class="restartGame">Начать заново</button>
+      </div>
     </div>
     <div class="bunkerBlock">
       <div class="bunker"></div>
-      <progress value="70" max="100"></progress>
+      <progress value="100" max="100"></progress>
     </div>
-    <div class="nameBox"></div>
-    <div class="monstr a1"></div>
-    <div class="monstr a2"></div>
+    <span class="nameBox"></span>
+    <div id ="bonusesContainer"></div>
+    <div id ="monstrContainer"></div>
+    <div id ="corpsContainer"></div>
   </div>
+  <!--<div class="healingBox"></div>-->
 </body>
+</html>

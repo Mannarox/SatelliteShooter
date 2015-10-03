@@ -4,8 +4,7 @@ window.onload = function() {
 };
 
 function myFunction() {
-    var socket = io.connect('https://foralexey-mannarox.c9.io/');
-    //var tesssss = document.getElementsByClassName("chat")[0];
+    var socket = io.connect('https://foralexey-mannarox.c9.io/'); //socket
     var message1 = "Не буду многословен боец, мутанты обнаружили расположение нашего бункера и их орды мчаться сейчас сюда. Наше военное положение крайне тяжелое! Я отдал приказ начать эвакуацию людей.";
     var message2 = "Часть наших отрядов защищает вход. Вам предстоит взять под управление спутник с рельсотронной пушкой, и делать удары с орбиты по подступающим противникам. Продержитесь, сколько сможете. Это приказ!";
     var gamePole = document.getElementsByClassName("gamePole")[0];
@@ -36,28 +35,24 @@ function myFunction() {
     var myWindowHeight = $(window).height();
     var height1Percent = myWindowHeight/100;
     
-    console.log("Ширина окна = "+myWindowWidth);
-    console.log("1% ширины окна = "+width1Percent);
-    
-    // var div = document.createElement('div');
-    // console.dir(document.getElementsByTagName("progress")[0]);
-    // console.dir(document.getElementsByTagName("img")[0]);
-    // console.dir( SolderPanel );
+    // console.log("Ширина окна = "+myWindowWidth);
+    // console.log("1% ширины окна = "+width1Percent);
     
     socket.on("informationServer", function(inf){
                 // console.log("массив сервера" + inf);
     });
+    
     window.addEventListener("resize", function(){
          myWindowWidth = $(window).width();
          width1Percent = myWindowWidth/100;
          myWindowHeight = $(window).height();
          height1Percent = myWindowHeight/100;
     });
-    document.addEventListener("submit",submitt); // отключение события submit
+    document.addEventListener("submit",submitt); //turn off event submit
     function submitt(e){
         e.preventDefault();
     }
-    forma.addEventListener("paste", function(e){
+    forma.addEventListener("paste", function(e){ //turn off paste (ctrl + V)
         e.preventDefault();
     });
     forma.addEventListener("keypress", function(e){
@@ -68,23 +63,20 @@ function myFunction() {
         }
     });
     
-    but.addEventListener( "click", listen);
+    but.addEventListener( "click", listen); // clicked accept nick button
     function listen(){
-        // console.log(event);
-        //var trimValue = forma.value.trim();
-        
         if (forma.value == '' || forma.value == " ") {
             alert("Ты забыл ввести имя?");
         } else {
             myName = forma.value;
-            socket.emit("newPlayer", myName );
+            socket.emit("newPlayer", myName ); // send nick on server for check, occupied nick or free
         }
     }
-    socket.on("StatusName", function(status){
+    socket.on("StatusName", function(status){ // status of nick on server
         console.log("Получаем статус имени!");
-        if (status == true) {
+        if (status == true) { //if nick occupied on server
             alert("Имя занято!");
-        } else {
+        } else { //if nick free on server
             console.dir(score);
             
             myName = forma.value;
@@ -103,18 +95,13 @@ function myFunction() {
             divName.className ='defeatName';
             divScore.className ='defeatScore';
             div.id = myName+"Score";
-            // div.innerText = myName + ": 0 очков";
             divName.innerText = myName + " : ";
             divScore.innerText = " 0 очков";
             score.appendChild(div);
             div.appendChild(divName);
             div.appendChild(divScore);
             
-            // console.dir(score);
-            // console.dir(score.children.length);
-
-            
-            document.addEventListener("mousemove", mouseMove, false);
+            document.addEventListener("mousemove", mouseMove, false); //listening to mouse movements of users
             function mouseMove (event){
                 var x = event.x;
                 var y = event.y;
@@ -123,21 +110,21 @@ function myFunction() {
                 var leftCoord = x/width1Percent; 
                 var topCoord = y/height1Percent;
                 
-                socket.emit("coordinatesAndName", { name:myName, xLeft:leftCoord, yTop:topCoord } );
+                socket.emit("coordinatesAndName", { name:myName, xLeft:leftCoord, yTop:topCoord } ); //send mouse coordinates other users in my room
                 document.removeEventListener("mousemove", mouseMove);
                 setTimeout(addMouseMove, 40);
-                // console.dir( $(".namebox").offset().left );
             }
             function addMouseMove() {
                 document.addEventListener("mousemove", mouseMove, false);
             }
-            buttonBackUp.addEventListener( "click", function(){
+            
+            buttonBackUp.addEventListener( "click", function(){ //button for back up message of soldier
                 if(SolderTextStep == 2){
                    SolderTextStep = 1; 
                    textSolder.innerText = message1;
                 }
             });
-            buttonForward.addEventListener( "click", function(){
+            buttonForward.addEventListener( "click", function(){ //button for next message of soldier
                 if(SolderTextStep == 1){
                    SolderTextStep = 2; 
                    textSolder.innerText = message2;
@@ -150,16 +137,14 @@ function myFunction() {
   
     
     
-    function startGameAllPlayers(){ //START GAME!
-        // console.dir( ContainerResultsPanel );
+    function startGameAllPlayers(){ //if player clicked button START GAME!
         alert("startGame!");
         BunkerLife.value = 100;
-        socket.emit("startGame", myName); //нажал начать игру, (запуск вычислений на сервере)
+        socket.emit("startGame", myName); //send start to server, (start calculation in server)
         SolderPanel.style.display = "none";
         preview.style.width = "auto";
     }
-    socket.on("turnOffPanel", function(){
-        // console.log("принято отключить панель!");
+    socket.on("turnOffPanel", function(){ //turn off panel of message of solder
         $faceSolder.css( "background-image","url(./image/soldier3.png)" );
         SolderPanel.style.display = "none";
         preview.style.width = "auto";
@@ -177,20 +162,22 @@ function myFunction() {
         }
     });
     
-    function GameOver(){ //DEFEAT GAME
+    function GameOver(){ //DEFEAT GAME , if bunker was destroyed ( life = 0 )
     
         socket.emit("defeatGame", myName);
-        // console.log("DEFEAT FUNCTION!");
+        
+        //==wipe off monsters in map==========
         $(".monstr").remove();
         $(".boss").remove();
-        
         setTimeout(function(){
             $(".monstr").remove();
             $(".boss").remove();
         },200);
+        //==wipe off monsters in maps==the end==
         
-        myScore = 0;
-    
+        myScore = 0; //reset my points
+        
+        //====cycle add information about players in panel of results===
         for(var i = 0; i<score.children.length; i ++){
             
             var name = score.children[i].children[0].innerText;
@@ -211,12 +198,11 @@ function myFunction() {
             div.appendChild(divScore);
             ContainerResultsPanel.appendChild(div);
         }
+        //====cycle add information about players in panel of results===the end==
         
         defeatPanel.style.display = "block";
-        // console.dir( ContainerResultsPanel );
 
-        ButtonRestart.addEventListener( "click", function(){
-            // console.dir( ContainerResultsPanel.children + " текущая длина после нажатия" );
+        ButtonRestart.addEventListener( "click", function(){ // button of "Начать заново"
             $faceSolder.css( "background-image","url(./image/soldier3.png)" );
             SolderPanel.style.display = "block";
             preview.style.width = "560px";
@@ -233,9 +219,8 @@ function myFunction() {
     }
     
     
-    
-    socket.on("spawnMonster", function(monstrData){ //Получение монстров с сервера
-        // console.log(monstrData);
+    //=====accept simple monsters from server======
+    socket.on("spawnMonster", function(monstrData){
         var div = document.createElement('div');
         
         if (monstrData.position == 1) {
@@ -312,12 +297,10 @@ function myFunction() {
             monstrContainer.appendChild(div);
         }
         
-        
+        //========if after 7 seconds, monster entered in bunker, bunker loses 10 lives========
         setTimeout(function(){
             if($("#Monstr"+monstrData.monstrId)[0] != undefined){
                 $("#Monstr"+monstrData.monstrId).remove();
-                // console.log( "Монстр вошел в бункер" );
-                // console.log( BunkerLife.value );
                 BunkerLife.value -= 10;
                 
                 if( BunkerLife.value <= 50 && BunkerLife.value >= 40 ){
@@ -325,23 +308,24 @@ function myFunction() {
                 } else if ( BunkerLife.value == 0){
                     GameOver();
                 }
-                
-            } else {
-                // console.log("Монстр не дошел до бункера");
             }
         }, 7000);
-
+        //====if after 7 seconds, monster entered in bunker, bunker loses 10 lives====the end==
+        
         $(".monstr").off("click");  
-        $(".monstr").on("click", function(event){
-            socket.emit( "monstrKill", {Name:myName, idOfMonstr:$(this).attr("id"), score:myScore } );
+        $(".monstr").on("click", function(event){ //if player clicked on monster
+            socket.emit( "monstrKill", {Name:myName, idOfMonstr:$(this).attr("id"), score:myScore } );//send identifier dead monster to server
         });
     });
-    socket.on("mostrDead", function(monstrData){ // получение номера мертвого монстра для удаления
+    //=====accept simple monsters from server======the end=====
+    
+    socket.on("mostrDead", function(monstrData){ // accept from server dead monster, for delete
         var corps = document.createElement('img');
         var expl = document.createElement('img');
         var coordY = $("#"+monstrData.idOfMonstr).offset().top; 
         var coordX = $("#"+monstrData.idOfMonstr).offset().left;
         
+        //====create explosion animation====
         expl.className ='explosion';
         expl.src = "https://foralexey-mannarox.c9.io/image/explosionAnimation.gif";
         expl.style.top = coordY+"px";
@@ -350,7 +334,9 @@ function myFunction() {
         setTimeout(function(){
             expl.remove();
         },700);
+        //====create explosion animation====the end===
         
+        //====create corps of monster====
         corps.className ='corps';
         corps.src = "https://foralexey-mannarox.c9.io/image/corps.png";
         corps.style.top = coordY+"px";
@@ -359,14 +345,15 @@ function myFunction() {
         setTimeout(function(){
             corps.remove();
         },6000);
+        //====create corps of monster====the end===
         
         $("#"+monstrData.idOfMonstr).remove();
         var addPoints = monstrData.scorePlayer += 10;
-        // console.log(addPoints);
         if(monstrData.Name == myName){myScore += 10;}
         $("#"+monstrData.Name+"Score")[0].children[1].innerText = addPoints+" очков";
     });
     
+    //=====accept monster boss from server===========
     socket.on("spawnBoss", function(bossData){
         var divBoss = document.createElement('div');
         livesOfBoss = 3;
@@ -402,7 +389,6 @@ function myFunction() {
         setTimeout(function(){
             if($("#Boss"+bossData.bossNumber)[0] != undefined){
                 $("#Boss"+bossData.bossNumber).remove();
-                // console.log( "Boss вошел в бункер" );
                 BunkerLife.value -= 15;
                 
                 if( BunkerLife.value <= 50 && BunkerLife.value >= 40 ){
@@ -419,12 +405,16 @@ function myFunction() {
             socket.emit( "BossShot", {Name:myName, idOfBoss:$(this).attr("id"), score:myScore} );
         });
     });
-    socket.on("BossShotAllPlayers", function(nameWhoShot){ // получение номера мертвого боса для удаления
+    //=====accept monster boss from server=======the end====
+    
+    socket.on("BossShotAllPlayers", function(nameWhoShot){ // accept from server dead boss, for delete
+        var corps = document.createElement('img');
         var corps = document.createElement('img');
         var expl = document.createElement('img');
         var coordY = $("#"+nameWhoShot.idOfBoss).offset().top; 
         var coordX = $("#"+nameWhoShot.idOfBoss).offset().left;
         
+        //====create explosion animation====
         expl.className ='explosion';
         expl.src = "https://foralexey-mannarox.c9.io/image/explosionAnimation.gif";
         expl.style.top = coordY+"px";
@@ -433,6 +423,7 @@ function myFunction() {
         setTimeout(function(){
             expl.remove();
         },700);
+        //====create explosion animation====the end===
         
         livesOfBoss -= 1;
         var addPoints = nameWhoShot.scorePlayer += 15;
@@ -440,6 +431,7 @@ function myFunction() {
         $("#"+nameWhoShot.Name+"Score")[0].children[1].innerText = addPoints+" очков";
         
         if(livesOfBoss == 0){
+            //====create corps of monster============
             $("#"+nameWhoShot.idOfBoss).remove();
             corps.className ='bossCorps';
             corps.src = "https://foralexey-mannarox.c9.io/image/bossCorps.png";
@@ -450,10 +442,11 @@ function myFunction() {
             setTimeout(function(){
                 corps.remove();
             },8000);
+            //====create corps of monster===the end===
         }
     });
     
-    socket.on("spawnHealing", function(healingData){
+    socket.on("spawnHealing", function(healingData){// accept from server healing box
         var healingBox = document.createElement('div');
         healingBox.className ='healingBox';
         healingBox.style.top = healingData.posTop * height1Percent + "px";
@@ -464,7 +457,6 @@ function myFunction() {
         
         setTimeout(function(){
             $("#Healing"+healingData.healingId).remove();
-            // healingBox.remove();
         },2500);
         
         $(".healingBox").off("click");  
@@ -472,7 +464,7 @@ function myFunction() {
              socket.emit( "clickHealing", {Name:myName, idOfHealing:$(this).attr("id"), score:myScore} );
         });
     });
-    socket.on("HealingClickAllPlayers", function(healingData){
+    socket.on("HealingClickAllPlayers", function(healingData){ // accept from server information about player who clicked on healing box
         var addPoints = healingData.scorePlayer += 10;
         if(healingData.Name == myName){myScore += 10;}
         $("#"+healingData.Name+"Score")[0].children[1].innerText = addPoints+" очков";
@@ -482,7 +474,7 @@ function myFunction() {
     });
     
     
-    socket.on("sendName",function(name){ //Полчение имени нового игрока (присоеденяются после меня)
+    socket.on("sendName",function(name){ //accept new name of new player (присоеденяются после меня (connceted after me))
         var div = document.createElement('div');
         var divScore = document.createElement('div');
         var divScoreName = document.createElement('div');
@@ -508,6 +500,8 @@ function myFunction() {
         divScore.appendChild(divScoreName);
         divScore.appendChild(divScoreNameScore);
     });
+    
+    //======accept nick of player who went on server before I=======
     socket.on('toAcceptNames', function(names){ //Получение игроков зашедших раньше на сервер
         console.log("Получил список пользователей на сервере" + names);
         // alert("hello!!!!!");
@@ -536,18 +530,18 @@ function myFunction() {
         divScore.appendChild(divScoreName);
         divScore.appendChild(divScoreNameScore);
     });
+    //======accept nick of player who went on server before I===the end=====
     
 
-    
+    //======accept coordinates of cursors other players in my room===============
     socket.on('NameAndcoordinates',function(NameAndCoord){ //получаем координаты других игроков с клиентов
-    
         var user = document.getElementById(NameAndCoord.name);
         user.style.left = Math.round( width1Percent * NameAndCoord.xLeft ) + "px";
         user.style.top = Math.round( height1Percent * NameAndCoord.yTop ) + "px";
-        
     });
+    //======accept coordinates of cursors other players=====the end====
     
-    socket.on("deleteUser", function(disconnectName){ //действие при откючении игроков
+    socket.on("deleteUser", function(disconnectName){ //действие при откючении игроков (if player disconnected)
         console.log(disconnectName + " был отключен от игры");
         var discUser = document.getElementById(disconnectName);
         var discUserScore = document.getElementById(disconnectName+"Score");

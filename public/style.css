@@ -437,3 +437,30 @@ button {
     }
     
 }
+@media only screen and (min-width: 1800px) {
+  .bigForm {
+          width: 65%;
+    }
+    .monitorBlock{
+        padding: 222px 370px 171px 245px;
+    }
+    
+}
+@media only screen and (min-width: 2500px) {
+  .bigForm {
+          width: 60%;
+    }
+    .monitorBlock{
+        padding: 315px 460px 265px 281px;
+    }
+    
+}
+@media only screen and (min-width: 2700px) {
+  .bigForm {
+          width: 40%;
+    }
+    .monitorBlock{
+        padding: 330px 453px 270px 281px;
+    }
+    
+}

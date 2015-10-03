@@ -6,7 +6,7 @@ var io = require('socket.io')(server);
 //var jade = require('jade');
 //var util = require('util');
 //var port = 4005;
-var globalRoom = []; //игровые комнаты и их содержимое
+var globalRoom = []; //game rooms and their contents
 var globalIntervalOfStorage = [];
 
 app.set('views', './views');
@@ -17,88 +17,75 @@ app.get('/', function(req, res){
     res.sendfile('views/index2.html');
 });
 
-function cloneObject(obj) { //функция копирования объекта
+
+//====function of copy of object====
+function cloneObject(obj) {
     if (obj === null || typeof obj !== 'object') {
         return obj;
     }
- 
     var temp = obj.constructor(); 
     for (var key in obj) {
         temp[key] = cloneObject(obj[key]);
     }
- 
     return temp;
 }
+//====function of copy of object The END====
 
 
-//====SOCKET=====
-io.on("connection", function(socket){
-    // console.log(socket.id + " connection installed"); 
-
+//====SOCKET====START=====
+io.on("connection", function(socket){ //new player connected to server
     socket.on("newPlayer", function(name){
         
         console.log("Запрос с клиента прошел!");
     	
-    	if (globalRoom.length > 0) { //если есть комнаты
-            // console.log('комната есть');
-    	   // var copyGlobalRoom =[];
-    	    
+    	if (globalRoom.length > 0) { //if server has game rooms
     	    var copyGlobalRoom = ( cloneObject(globalRoom) );
     	    var lastRoom = copyGlobalRoom[copyGlobalRoom.length -1];
     	    
-    	   // copyGlobalRoom.push(globalRoom); //что бы не было ссылки на оригинальный массив
-    	   // copyGlobalRoom = globalRoom.concat();
-    	   // socket.emit("informationServer", copyGlobalRoom);
-    	    for (var i = 0; i < copyGlobalRoom.length; i++ ) {
-                // console.log( "цикл Проходимся по комнатам");
+    	    for (var i = 0; i < copyGlobalRoom.length; i++ ) {//go through all the game rooms
             
-    	        for(var b = 0; b < copyGlobalRoom[i].length; b++){ 
-    	            if(copyGlobalRoom[i][b].nick == name) {
-    	               // console.log(90000000000000);
-    	               // console.log(copyGlobalRoom[i][b].nick);
+    	        for(var b = 0; b < copyGlobalRoom[i].length; b++){ //go through all players in every game room
+    	            if(copyGlobalRoom[i][b].nick == name) { //check names on server, if name is occupied
     	                console.log(name +" это имя занято!");
                         var HasNick = true;
-        	            socket.emit("StatusName", HasNick); //Если имя занято на сервере
-        	            break
+        	            socket.emit("StatusName", HasNick); //to say to client, that name is occupied
+        	            break;
                     } else {
                         if(i == copyGlobalRoom.length - 1 && b == copyGlobalRoom[i].length -1){
                             console.log(name +" это имя свободно");
                             var HasNick = false;
-                            socket.emit("StatusName", HasNick);//Если имени нет среди других имен
+                            socket.emit("StatusName", HasNick);//if this the name is not on the server, among other names
                             putOnServer(copyGlobalRoom,lastRoom);
                         }
                     }
-                // console.log("конец цикла на проверку имени внутри комнаты");
     	        }
-    	   // console.log("конец цикла на прохождение по комнатам (проверка имен)");
     	    }
-    	    
-    	}  else {
+    	}  else { //if the server does not have playrooms
     	    var HasNick = false;
-            socket.emit("StatusName", HasNick); //Если имя свободно
-            putOnServer();
+            socket.emit("StatusName", HasNick); //the server does not have game rooms and is free nick, tell it to the client
+            putOnServer(); //to start to create playroom and to put nick in room (call)
     	}
 
-    	function putOnServer(copyGlobalRoom,lastRoom){// Создание игровых комнат Начало
+    	function putOnServer(copyGlobalRoom,lastRoom){// to start to create playroom and to put nick in room
 
-	    	if (globalRoom.length > 0) { //Если есть комната
+	    	if (globalRoom.length > 0) { //if server has game rooms
 	    	    
-	    	    if (lastRoom.length < 3) { //и в Последней комнате есть свободное место
-	    	    
+	    	    if (lastRoom.length < 3) { //and last room has free place
 	    	        var lastRoomLength = lastRoom.length;
-	    	        for(var i = 0; i<lastRoomLength; i++){
-	    	             socket.emit('toAcceptNames',lastRoom[i].nick); // Получаю имена тех кто со мной в одной комнате
-	    	             io.to(lastRoom[i].id).emit("sendName", name); // остальные в комнате получают моё имя
+	    	        for(var i = 0; i<lastRoomLength; i++){//go through all the users in the room
+	    	             socket.emit('toAcceptNames',lastRoom[i].nick); //I get the names of those who came before me in room
+	    	             io.to(lastRoom[i].id).emit("sendName", name); //those who are already in the room, accept my nick
 	    	             
+	    	             //=====data of new player to put to server====:
 	    	             if(i == lastRoom.length -1){
         	                var PlayerData = {};
         	    	        PlayerData.nick = name;
         	    	        PlayerData.id = socket.id;
         	    	        globalRoom[globalRoom.length -1].push(PlayerData);
-        	    	      //  console.log( globalRoom + "получил других игроков, отправил игрока в комнату");
-	    	            }
+	    	             }
+	    	             //=====data of new player to put to server====the end
 	    	        }
-	    	    } else { // и в Последней комнате нет свободного места
+	    	    } else { //and last room hasn't free place, //=====data of new player to put to server====:
 	    	        var GameRoom = [];
             	    var PlayerData = {};
             	    var roomIntervalStorage = {};
@@ -109,8 +96,9 @@ io.on("connection", function(socket){
             	    globalIntervalOfStorage.push(roomIntervalStorage);
             	    console.log("New Player"+' "'+name+'" '+ "created");
 	    	    }
+	    	    //=====data of new player to put to server====the end
         
-        	} else { //Если на сервере нет ни одной комнаты
+        	} else { //if server has not rooms
         	    var GameRoom = [];
         	    var PlayerData = {};
         	    var roomIntervalStorage = {};
@@ -122,31 +110,30 @@ io.on("connection", function(socket){
         	    console.log("New Player"+' "'+name+'" '+ "created");
         	   // socket.emit("leader");
         	}
-        	// Создание игровых комнат Конец
         	
-        	socket.emit("informationServer", globalRoom);
+        	socket.emit("informationServer", globalRoom); //send information for developers
     	}
     });
 
-//===============Получение и отправка координат курсора игроков=========
+//===============to accept and send coordinates about cursor all players=========
     socket.on('coordinatesAndName', function(coord){
     	//console.log(coord);
     	socket.broadcast.emit("NameAndcoordinates",coord);
     });
-//===============Получение и отправка координат курсора игроков=====The end==== 
+//===============to accept and send coordinates about cursor all players=====The end==== 
 
-//===============кто то нажал начать игру в комнате===================
+//===============someone pushed the button to start game===================
     socket.on("startGame", function(nameWhoClickPlay){
         var thisRoom;
         var thisIntervalStorage;
   
-        searchPlayers:for (var i = 0; i < globalRoom.length; i++ ) { //определение комнаты игрока и количество игроков в ней
+        searchPlayers:for (var i = 0; i < globalRoom.length; i++ ) { //definition of room of player who clicked button and number of players in room
             for(var b = 0; b < globalRoom[i].length; b++){
                 if(globalRoom[i][b].nick == nameWhoClickPlay){
                     thisRoom = globalRoom[i];
                     thisIntervalStorage = globalIntervalOfStorage[i];
                     // console.log(thisRoom + " |||| "+globalRoom[i]);
-                    for(var c = 0; c < thisRoom.length; c++ ){ //уведомление других игроков о запуске игры
+                    for(var c = 0; c < thisRoom.length; c++ ){ //Notify other players, that game is running and turn off panel in client
                         if(thisRoom[c].nick != nameWhoClickPlay){
                             io.to( thisRoom[c].id ).emit("turnOffPanel");
                             console.log("отправляю игроку отключить панель!");
@@ -156,35 +143,35 @@ io.on("connection", function(socket){
                 }
             }
         }
-        function randomInteger(min, max) { // генератор диапозона чисел
+        function randomInteger(min, max) { // function for generate diapason of numbers
             var rand = min - 0.5 + Math.random() * (max - min + 1);
             rand = Math.round(rand);
             return rand;
         }
         
         
-        // ||||Запускх функций Генерации объектов игры|||||
+        //=====start of generate game objects=======
         function checkLenghtRoom() {
             var timeRespawn;
             if (thisRoom.length == 1){timeRespawn = 800} 
             else if(thisRoom.length == 2){timeRespawn = 700}
             else if(thisRoom.length == 3){timeRespawn = 600}
-            return timeRespawn
+            return timeRespawn;
         }
-        setTimeout(startSpawnMonster, 1500); //вызов Генерации монстров 
+        setTimeout(startSpawnMonster, 1500); //monsters generate
             function startSpawnMonster(){ 
-                var monstrInterval = setInterval( startCount, checkLenghtRoom() );   //вызов Интервал генерации монстров
+                var monstrInterval = setInterval( startCount, checkLenghtRoom() );   //call of interval generate monsters
                 thisIntervalStorage.monstr = monstrInterval;
             }
-        var bossInterval = setInterval(startRandomBoss, 13100); //10500/5000 //вызов Интервал генерации босса
+        var bossInterval = setInterval(startRandomBoss, 13100); //10500/5000 //call of interval generate bosses
         thisIntervalStorage.boss = bossInterval;
         
-        setTimeout(startSpawnHealing, 2000); //Восстановление жизней бункера
+        setTimeout(startSpawnHealing, 2000); //generate healing box
             function startSpawnHealing(){
                 var healingInterval = setInterval(startSendHealing, 5000);
                 thisIntervalStorage.healing = healingInterval;
             }
-        // ||||Запуск функций Генерации объектов игры КОНЕЦ|||||
+        //=====start of generate game objects=======the end====
         
  
         
@@ -217,10 +204,9 @@ io.on("connection", function(socket){
             }
         }
     });
-//===============кто то нажал начать игру в комнате========the end===========
+//===============someone pushed the button to start game========the end===========
 
 //===============monstr dead===================
-        //СПРОСИТЬ ПРО ПРЕРЫВАНИЕ НЕСКОЛЬКО УРОВНЕЙ ЦИКЛОВ break
     socket.on("monstrKill", function(monstrInformation){
         var thisRoom;
         // console.log(monstrInformation.idOfMonstr);  
@@ -257,7 +243,8 @@ io.on("connection", function(socket){
     });
 //===============Boss shot=======the end============
 
-//===============Healing==Ckick========================
+//===============Healing==Ckick=====================
+//========if someone clicked on healing box=========
     socket.on("clickHealing", function(playerClickName){
         var thisRoom;
         // console.log(monstrInformation.idOfMonstr);  
@@ -273,9 +260,10 @@ io.on("connection", function(socket){
             }
         }
     });
-//===============Healing==Ckick====the end============
+//===============Healing==Ckick====the end==========
 
 //===============Defeat Game========================
+//======if life of bunker less or zero==============
     socket.on('defeatGame', function(myName){
         console.log("Конец игры пришол");
         //  var thisRoom;
@@ -332,5 +320,4 @@ io.on("connection", function(socket){
 //====SOCKET===THE END==
 
 server.listen(process.env.PORT, process.env.HOST);
-//server.listen(port);
 console.log("server started on port " + process.env.PORT);

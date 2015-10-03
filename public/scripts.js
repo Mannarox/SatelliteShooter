@@ -184,10 +184,10 @@ function myFunction() {
         $(".monstr").remove();
         $(".boss").remove();
         
-        // setTimeout(function(){
-        //     $(".monstr").remove();
-        //     $(".boss").remove();
-        // },500);
+        setTimeout(function(){
+            $(".monstr").remove();
+            $(".boss").remove();
+        },200);
         
         myScore = 0;
     

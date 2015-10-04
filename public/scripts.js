@@ -166,14 +166,16 @@ function myFunction() {
     
         socket.emit("defeatGame", myName);
         
-        //==wipe off monsters in map==========
+        //==wipe off game objects in map==========
         $(".monstr").remove();
         $(".boss").remove();
+        $(".healingBox").remove();
         setTimeout(function(){
             $(".monstr").remove();
             $(".boss").remove();
+            $(".healingBox").remove();
         },200);
-        //==wipe off monsters in maps==the end==
+        //==wipe off game objects in maps==the end==
         
         myScore = 0; //reset my points
         
@@ -223,76 +225,44 @@ function myFunction() {
     socket.on("spawnMonster", function(monstrData){
         var div = document.createElement('div');
         
+        div.className ='monstr';
+        div.classList.add("position"+ monstrData.position);
+        div.id = "Monstr" + monstrData.monstrId;
+        
         if (monstrData.position == 1) {
-            div.className ='monstr';
-            div.classList.add("position1");
-            div.id = "Monstr" + monstrData.monstrId;
             div.style.backgroundImage = "url(./image/monstrAnimationTopToBottom.gif)";
             monstrContainer.appendChild(div);
         } else if(monstrData.position == 2) {
-            div.className ='monstr';
-            div.classList.add("position2");
-            div.id = "Monstr" + monstrData.monstrId;
             div.style.backgroundImage = "url(./image/monstrAnimationTopToBottom.gif)";
             monstrContainer.appendChild(div);
         } else if(monstrData.position == 3) {
-            div.className ='monstr';
-            div.classList.add("position3");
-            div.id = "Monstr" + monstrData.monstrId;
             div.style.backgroundImage = "url(./image/monstrAnimationTopToBottom.gif)";
             monstrContainer.appendChild(div);
         } else if(monstrData.position == 4) {
-            div.className ='monstr';
-            div.classList.add("position4");
-            div.id = "Monstr" + monstrData.monstrId;
             div.style.backgroundImage = "url(./image/monstrAnimationRightToLeft.gif)";
             monstrContainer.appendChild(div);
         } else if(monstrData.position == 5) {
-            div.className ='monstr';
-            div.classList.add("position5");
-            div.id = "Monstr" + monstrData.monstrId;
             div.style.backgroundImage = "url(./image/monstrAnimationRightToLeft.gif)";
             monstrContainer.appendChild(div);
         } else if(monstrData.position == 6) {
-            div.className ='monstr';
-            div.classList.add("position6");
-            div.id = "Monstr" + monstrData.monstrId;
             div.style.backgroundImage = "url(./image/monstrAnimationRightToLeft.gif)";
             monstrContainer.appendChild(div);
         } else if(monstrData.position == 7) {
-            div.className ='monstr';
-            div.classList.add("position7");
-            div.id = "Monstr" + monstrData.monstrId;
             div.style.backgroundImage = "url(./image/monstrAnimationBottomToTop.gif)";
             monstrContainer.appendChild(div);
         } else if(monstrData.position == 8) {
-            div.className ='monstr';
-            div.classList.add("position8");
-            div.id = "Monstr" + monstrData.monstrId;
             div.style.backgroundImage = "url(./image/monstrAnimationBottomToTop.gif)";
             monstrContainer.appendChild(div);
         } else if(monstrData.position == 9) {
-            div.className ='monstr';
-            div.classList.add("position9");
-            div.id = "Monstr" + monstrData.monstrId;
             div.style.backgroundImage = "url(./image/monstrAnimationBottomToTop.gif)";
             monstrContainer.appendChild(div);
         } else if(monstrData.position == 10) {
-            div.className ='monstr';
-            div.classList.add("position10");
-            div.id = "Monstr" + monstrData.monstrId;
             div.style.backgroundImage = "url(./image/monstrAnimationLeftToRight.gif)";
             monstrContainer.appendChild(div);
         } else if(monstrData.position == 11) {
-            div.className ='monstr';
-            div.classList.add("position11");
-            div.id = "Monstr" + monstrData.monstrId;
             div.style.backgroundImage = "url(./image/monstrAnimationLeftToRight.gif)";
             monstrContainer.appendChild(div);
         } else if(monstrData.position == 12) {
-            div.className ='monstr';
-            div.classList.add("position12");
-            div.id = "Monstr" + monstrData.monstrId;
             div.style.backgroundImage = "url(./image/monstrAnimationLeftToRight.gif)";
             monstrContainer.appendChild(div);
         }
@@ -356,33 +326,24 @@ function myFunction() {
     //=====accept monster boss from server===========
     socket.on("spawnBoss", function(bossData){
         var divBoss = document.createElement('div');
+        divBoss.classList.add("boss");
+        divBoss.id = "Boss"+bossData.bossNumber;
+        
         livesOfBoss = 3;
         if(bossData.position == 1){
-            // console.log("BOS111111");
             divBoss.classList.add("position2");
-            divBoss.classList.add("boss");
-            divBoss.id = "Boss"+bossData.bossNumber;
             divBoss.style.backgroundImage = "url(./image/bossTopToBottom.gif)";
             monstrContainer.appendChild(divBoss);
         } else if(bossData.position == 2){
-            // console.log("BOS222222");
             divBoss.classList.add("position5");
-            divBoss.classList.add("boss");
-            divBoss.id = "Boss"+bossData.bossNumber;
             divBoss.style.backgroundImage = "url(./image/bossRightToLeft.gif)";
             monstrContainer.appendChild(divBoss); 
         } else if(bossData.position == 3){
-            // console.log("BOS333333");
             divBoss.classList.add("position8");
-            divBoss.classList.add("boss");
-            divBoss.id = "Boss"+bossData.bossNumber;
             divBoss.style.backgroundImage = "url(./image/bossBottomToTop.gif)";
             monstrContainer.appendChild(divBoss); 
         } else if(bossData.position == 4){
-            // console.log("BOS444444");
             divBoss.classList.add("position11");
-            divBoss.classList.add("boss");
-            divBoss.id = "Boss"+bossData.bossNumber;
             divBoss.style.backgroundImage = "url(./image/bossLeftToRight.gif)";
             monstrContainer.appendChild(divBoss); 
         }
